@@ -10,10 +10,8 @@ import numpy as np
 import streamlit as st
 from PIL import Image
 
-try:
-    import tensorflow as tf
-except Exception:
-    tf = None
+# TensorFlow is imported lazily only when prediction is requested.
+tf = None
 
 try:
     from reportlab.lib import colors
@@ -1140,8 +1138,9 @@ def scanner_page():
             return
 
         if model is None:
+            error_msg = st.session_state.get("model_load_error", "Model file missing or TensorFlow could not load.")
             st.markdown(
-                '<div class="disclaimer">Model not found. Make sure models/retina_model.keras exists.</div>',
+                f'<div class="disclaimer">Model not ready: {safe(error_msg)}</div>',
                 unsafe_allow_html=True,
             )
             return
