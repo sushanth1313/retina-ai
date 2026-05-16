@@ -595,6 +595,36 @@ def inject_css():
             display: none !important;
         }
 
+
+        /* FINAL NO-WHITE MODE: remove probability board and old large panels */
+        .prob-wrap,
+        .prob-row,
+        .bar-bg,
+        .bar-fill,
+        .result-card,
+        .result-grid,
+        .result-item,
+        .risk-strip,
+        .simple-result-row {
+            display: none !important;
+        }
+
+        div[data-testid="stSkeleton"],
+        div[data-testid="stSkeleton"] *,
+        div[data-testid="stSpinner"],
+        div[data-testid="stSpinner"] *,
+        iframe,
+        canvas,
+        div[style*="background-color: rgb(255, 255, 255)"],
+        div[style*="background: white"],
+        div[style*="background-color: white"] {
+            background: transparent !important;
+            background-color: transparent !important;
+            color: #F8FAFC !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
         </style>
         """,
         unsafe_allow_html=True,
@@ -1022,7 +1052,7 @@ def scanner_placeholder():
             <div class="scanner-title">Retina Scanner Ready</div>
             <div class="scanner-text">
                 Upload a retinal image and click analyze. The system will generate stage,
-                confidence, risk level, class probabilities, and a PDF report.
+                confidence, risk level, and a PDF report.
             </div>
         </div>
         """,
@@ -1162,7 +1192,7 @@ def scanner_page():
 
         render_card(
             "Report Output",
-            "After analysis, the app will generate prediction, confidence, risk level, class probabilities, and a PDF download.",
+            "After analysis, the app will generate prediction, confidence, risk level, and a PDF download.",
             "PDF",
             False,
         )
@@ -1197,6 +1227,12 @@ def scanner_page():
         render_metric_grid(class_key, confidence, inference_time)
         render_pdf_download(class_key, confidence, probs, inference_time)
         render_card(
+            "Report Generated",
+            f"{DISPLAY_NAMES[class_key]} detected with {confidence:.2f}% confidence. Open the PDF for full clinical-style summary.",
+            "✓",
+            True,
+        )
+        render_card(
             "Latest PDF Summary",
             f"{DISPLAY_NAMES[class_key]} detected with {confidence:.2f}% confidence. Download the PDF report above.",
             "PDF",
@@ -1208,7 +1244,6 @@ def scanner_page():
             "✓",
             True,
         )
-        st.markdown(probability_html(probs), unsafe_allow_html=True)
 
         st.markdown(
             """
